@@ -1,7 +1,7 @@
 /*  bad6502 A Raspberry Pi-based backend to a 65C02 CPU
     Copyright (C) 2025  D.Herrendoerfer
 
-    BSD 2-Clause License
+    MIT License
 */
 
 /* MSBASIC 
