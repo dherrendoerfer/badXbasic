@@ -5,4 +5,4 @@ all:
 	rm a.o65
 
 clean:
-	rm bios.h
+	rm -f bios.h
