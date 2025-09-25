@@ -23,3 +23,7 @@ MONRDKEY
 MONCOUT
                 jmp CHROUT
 
+.dsb $FFF1 - *
+MONISCNTC
+                rts
+
