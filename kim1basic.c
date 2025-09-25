@@ -18,7 +18,7 @@
 
 #include "../badX16/cpu/fake6502.h"
 #include "msbasic/kb9_msbasic.h"
-#include "bios/bios.h"
+#include "bios/kim_bios.h"
 
 #define RAM_START 0x2000
 #define COLD_START 0x4065
@@ -48,6 +48,8 @@ uint8_t read6502(uint16_t address, uint8_t bank)
     return COLD_START & 0xff; 
   if (address == 0xFFFD)
     return COLD_START >> 8;
+
+  //2348: NMI ?
   
   // Virtual hardware (reads a char from stdin)
   if (address == 0xFF01)
@@ -78,12 +80,18 @@ void write6502(uint16_t address, uint8_t bank, uint8_t data)
 // Main prog
 int main(int argc, char **argv)
 {
+  for (uint16_t i=0; i != 0xFFFF; i++) {
+    mem[i] = 0xFF;
+  }
+
   //load msbasic @RAM_START
+  printf("Loading KIM-1 MSBASIC to :0x%04X\n",RAM_START);
   for (uint16_t i=0; i < msbasic_bin_len; i++) {
     mem[RAM_START+i] = msbasic_bin[i];
   }
 
   //load bios
+  printf("Loading BIOS to 0x1E00\n");
   for (uint16_t i=0; i < bios_len; i++) {
     mem[0x1E00+i] = bios[i];
   }
