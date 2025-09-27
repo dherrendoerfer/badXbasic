@@ -3,7 +3,7 @@
 CHRIN
                 lda $FF01
                 beq     no_keypressed
-                ;jsr     CHROUT                  ; echo
+                ;jsr     CHROUT                  ; local echo
 
                 sec
                 rts
@@ -13,6 +13,17 @@ no_keypressed
 
 CHROUT
                 sta $FF00
+                rts
+
+CNTLCHK
+                lda $FF01
+                beq     CNT_END
+                cmp     #$03
+                bne     CNT_END
+                sec
+                rts
+CNT_END
+                clc
                 rts
 
 .dsb $FFEB - *
@@ -25,5 +36,4 @@ MONCOUT
 
 .dsb $FFF1 - *
 MONISCNTC
-                rts
-
+                jmp CNTLCHK

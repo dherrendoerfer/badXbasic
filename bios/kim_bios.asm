@@ -5,7 +5,7 @@ MONRDKEY
 CHRIN
                 lda $FF01
                 beq     no_keypressed
-                ;jsr     CHROUT                  ; echo
+                jsr     CHROUT                  ; echo
 
                 sec
                 rts
