@@ -5,7 +5,7 @@
 */
 
 /* MSBASIC 
- * using OSI msbasic from microsoft
+ * using KIM-1 msbasic from microsoft
  * added unbuffered terminal
  */
 
@@ -19,11 +19,11 @@
 #include <termios.h>
 
 #include "../badX16/cpu/fake6502.h"
-#include "msbasic/osi_msbasic.h"
-#include "bios/osi_bios.h"
+#include "msbasic/microtan_msbasic.h"
+#include "bios/microtan_bios.h"
 
-#define RAM_START 0xA000
-#define COLD_START 0xBD11
+#define RAM_START 0xC000
+#define COLD_START 0xE076
 
 // the ram
 uint8_t mem[0x10000];
@@ -74,6 +74,7 @@ int getch()
     }
 }
 
+
 uint8_t read6502(uint16_t address, uint8_t bank)
 {
   // Manual reset vector
@@ -81,9 +82,7 @@ uint8_t read6502(uint16_t address, uint8_t bank)
     return COLD_START & 0xff; 
   if (address == 0xFFFD)
     return COLD_START >> 8;
-
-  //2348: NMI ?
-  
+ 
   // Virtual hardware (reads a char from stdin)
   if (address == 0xFF01) {
     if (!kbhit())
@@ -103,7 +102,10 @@ void write6502(uint16_t address, uint8_t bank, uint8_t data)
   if (address == 0xFF00) {
     printf("%c",(char)data);
     fsync(1);
-  }
+ }
+
+  if ((address >= 0x1E00) & (address < 2000)) //simulated ROM above E000 
+    return;
 
   if (address >= 0x8000) //simulated ROM above F000 
     return;
@@ -119,19 +121,19 @@ int main(int argc, char **argv)
   setbuf(stdout, NULL);
 
   for (uint16_t i=0; i != 0xFFFF; i++) {
-    mem[i] = 0xFF;
+    mem[i] = 0x60;
   }
 
   //load msbasic @RAM_START
-  printf("Loading OSI MSBASIC to :0x%04X\r\n",RAM_START);
+  printf("Loading MICROTAN MSBASIC to :0x%04X\r\n",RAM_START);
   for (uint16_t i=0; i < msbasic_bin_len; i++) {
     mem[RAM_START+i] = msbasic_bin[i];
   }
 
   //load bios
-  printf("Loading BIOS to 0x1E00\r\n");
+  printf("Loading BIOS to 0xEF00\r\n");
   for (uint16_t i=0; i < bios_len; i++) {
-    mem[0xFF10+i] = bios[i];
+    mem[0xEF00+i] = bios[i];
   }
 
   //reset the cpu
