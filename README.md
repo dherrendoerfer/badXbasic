@@ -8,7 +8,7 @@ Everything is intentionally kept as simple as posible.
 
 CNTL-C does not work correctly yet, you can use CNTL-X to exit the interpreter.  
 
-you need the badX16 repo checked out alongside this repo.
+you need the badX16 repo checked out alongside this repo. (https://github.com/dherrendoerfer/badX16)
 it uses the cpu/fake6502 files for running the 65c02.
 
 ### working are:
